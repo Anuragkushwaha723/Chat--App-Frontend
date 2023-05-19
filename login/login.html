@@ -12,21 +12,13 @@
 
 <body>
     <h1 class="fs-1 fw-bolder text-center text-dark">Chat App</h1>
-    <h3 class="fs-3 p-3 fw-bolder text-dark">SignUp</h3>
+    <h3 class="fs-3 p-3 fw-bolder text-dark">Login</h3>
     <div class="p-3">
         <form onsubmit="submitForm(event)">
-            <!-- name  -->
-            <label for="name" class="fs-4 form-label">Name : </label>
-            <input type="text" class="form-control  fs-5 mb-3" name="name" id="name" placeholder="Praveen Gupta"
-                required>
             <!-- email -->
             <label for="email" class="fs-4 form-label">Email Address : </label>
             <input type="email" class="form-control  fs-5 mb-3" name="email" id="email"
                 placeholder="praveengupta@gmail.com" required>
-            <!-- phone -->
-            <label for="phone" class="fs-4 form-label">Phone Number : </label>
-            <input type="number" class="form-control  fs-5 mb-3" name="phone" id="phone" placeholder="9823456778"
-                required>
             <!-- password -->
             <label for="password" class="fs-4 form-label">Password : </label>
             <input type="password" class="form-control  fs-5 mb-4" name="password" id="password" required>
@@ -35,17 +27,19 @@
 
             </div>
             <!-- submit Button -->
-            <input type="submit" class="btn fs-5 btn-outline-success" style="width: 100%;" value="SignUp">
+            <input type="submit" class="btn fs-5 btn-outline-success" style="width: 100%;" value="Login">
         </form>
     </div>
-    <a onclick="login()" href="#" class="link-primary fs-5" style="text-align: center;display: block;">Login</a>
+    <a onclick="signUp()" href="#" class="link-primary fs-5" style="text-align: center;display: block;">New User
+        -SignUp</a>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="signUp.js"></script>
+    <script src="login.js"></script>
 </body>
 
 </html>
