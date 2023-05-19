@@ -10,6 +10,7 @@ async function submitForm(e) {
         };
         await axios.post('http://localhost:3000/user/signUp', info);
         alert('Successfully signed up');
+        login();
     } catch (error) {
         showErrorMessage(error);
     }

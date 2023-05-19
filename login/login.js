@@ -6,7 +6,9 @@ async function submitForm(e) {
             email: e.target.email.value,
             password: e.target.password.value
         };
-        await axios.post('http://localhost:3000/user/login', info);
+        let data = await axios.post('http://localhost:3000/user/login', info);
+        let token = data.data.token;
+        localStorage.setItem('token', token);
         alert('Successfully logging in');
     } catch (error) {
         showErrorMessage(error);
