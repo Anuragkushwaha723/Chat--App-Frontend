@@ -10,6 +10,7 @@ async function submitForm(e) {
         let token = data.data.token;
         localStorage.setItem('token', token);
         alert('Successfully logging in');
+        window.location.href = '../chats/chats.html';
     } catch (error) {
         showErrorMessage(error);
     }

@@ -17,9 +17,14 @@
         <!-- Adding lists of chats like this -->
         <!-- <li>1</li> -->
     </ul>
+    <!-- Adding error to the page -->
+    <div id="error" class="mb-3 p-3 fs-5">
+
+    </div>
+    <!-- Adding footer send message input -->
     <div class="footer">
         <form action="#" class="p-1" onsubmit="submitMessage(event)">
-            <input type="text" name="messages" id="messages" class="fs-6" style="width: 70%;">
+            <input type="text" name="messages" id="messages" class="fs-6" style="width: 70%;" required>
             <input type="submit" class="btn btn-info btn-sm fs-5" value="Send">
         </form>
     </div>
