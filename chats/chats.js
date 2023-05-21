@@ -27,9 +27,14 @@ function showErrorMessage(error) {
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         let data = await axios.get('http://localhost:3000/chats/getMessage', { headers: { Authorization: token } });
-        if (data.data.length > 0) {
-            for (var i = 0; i < data.data.length; i++) {
-                addingListInTheScreen(data.data[i]);
+        if (data.data.users.length > 0) {
+            for (var i = 0; i < data.data.users.length; i++) {
+                addingUsersJoinedName(data.data.users[i]);
+            }
+        }
+        if (data.data.messages.length > 0) {
+            for (var i = 0; i < data.data.messages.length; i++) {
+                addingListInTheScreen(data.data.messages[i]);
             }
         }
     } catch (error) {
@@ -56,4 +61,16 @@ function parseJwt(token) {
     }).join(''));
 
     return JSON.parse(jsonPayload);
+}
+//user name who joined the chat
+function addingUsersJoinedName(data) {
+    let listsParent = document.getElementById('listOfChats');
+    let name;
+    if (userName.name === data.name) {
+        name = 'You ';
+    } else {
+        name = data.name;
+        name = name.charAt(0).toUpperCase() + name.slice(1);
+    }
+    listsParent.innerHTML += `<li>${name} joined</li>`;
 }
