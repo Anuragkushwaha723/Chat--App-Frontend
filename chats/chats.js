@@ -28,6 +28,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     try {
         let data = await axios.get('http://localhost:3000/chats/getMessage', { headers: { Authorization: token } });
         if (data.data.length > 0) {
+            clearListOfChatsInTheScreen();
             for (var i = 0; i < data.data.length; i++) {
                 addingListInTheScreen(data.data[i]);
             }
@@ -57,3 +58,22 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 }
+//before clearing the lis int the screen
+function clearListOfChatsInTheScreen() {
+    let listsParent = document.getElementById('listOfChats');
+    listsParent.innerHTML = ``;
+}
+// refreshing the page 1sec
+setInterval(async () => {
+    try {
+        let data = await axios.get('http://localhost:3000/chats/getMessage', { headers: { Authorization: token } });
+        if (data.data.length > 0) {
+            clearListOfChatsInTheScreen();
+            for (var i = 0; i < data.data.length; i++) {
+                addingListInTheScreen(data.data[i]);
+            }
+        }
+    } catch (error) {
+        showErrorMessage(error);
+    }
+}, 5000);
