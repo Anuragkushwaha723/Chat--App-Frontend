@@ -1,5 +1,7 @@
 let token = localStorage.getItem('token');
 let userName = parseJwt(token);
+localStorage.setItem("chats", '[]');
+localStorage.setItem("users", '[]');
 async function submitMessage(e) {
     try {
         e.preventDefault();
@@ -24,22 +26,8 @@ function showErrorMessage(error) {
     }, 4000);
 }
 //user refreshes the page it get fire the function 
-window.addEventListener('DOMContentLoaded', async () => {
-    try {
-        let data = await axios.get('http://localhost:3000/chats/getMessage', { headers: { Authorization: token } });
-        if (data.data.users.length > 0) {
-            for (var i = 0; i < data.data.users.length; i++) {
-                addingUsersJoinedName(data.data.users[i]);
-            }
-        }
-        if (data.data.messages.length > 0) {
-            for (var i = 0; i < data.data.messages.length; i++) {
-                addingListInTheScreen(data.data.messages[i]);
-            }
-        }
-    } catch (error) {
-        showErrorMessage(error);
-    }
+window.addEventListener('DOMContentLoaded', () => {
+    gettingData();
 })
 // adding list
 function addingListInTheScreen(data) {
@@ -74,3 +62,56 @@ function addingUsersJoinedName(data) {
     }
     listsParent.innerHTML += `<li>${name} joined</li>`;
 }
+//get the data from api and showe in the screen
+async function gettingData() {
+    try {
+        let users = JSON.parse(localStorage.getItem("users"));
+        let chats = JSON.parse(localStorage.getItem("chats"));
+        let lstUsrId, lstChtId;
+        if (users.length > 0) {
+            lstUsrId = users[users.length - 1].id;
+        }
+        if (chats.length > 0) {
+            lstChtId = chats[chats.length - 1].id;
+        }
+        let data = await axios.get(`http://localhost:3000/chats/getMessage?lstUsrId=${lstUsrId}&lstChtId=${lstChtId}`, { headers: { Authorization: token } });
+        if (data.data.users.length > 0) {
+            let newUsers = [...chats, ...data.data.users];
+            if (newUsers.length > 1000) {
+                for (var i = 0; i < 100; i++) {
+                    newUsers.shift();
+                }
+            }
+            localStorage.setItem("users", JSON.stringify(newUsers));
+        }
+        if (data.data.messages.length > 0) {
+            let newChats = [...chats, ...data.data.messages];
+            if (newChats.length > 1000) {
+                for (var i = 0; i < 100; i++) {
+                    newChats.shift();
+                }
+            }
+            localStorage.setItem("chats", JSON.stringify(newChats));
+        }
+        let userList = JSON.parse(localStorage.getItem("users"));
+        let chatList = JSON.parse(localStorage.getItem("chats"));
+        clearListOnTheScreen();
+        for (var i = 0; i < userList.length; i++) {
+            addingUsersJoinedName(userList[i]);
+        }
+        for (var i = 0; i < chatList.length; i++) {
+            addingListInTheScreen(chatList[i]);
+        }
+    } catch (error) {
+        showErrorMessage(error);
+    }
+}
+//clearing the list on the screen
+function clearListOnTheScreen() {
+    let listsParent = document.getElementById('listOfChats');
+    listsParent.innerHTML = ``;
+}
+//refreshing the data at 3sec
+setInterval(() => {
+    gettingData();
+}, 3000);
