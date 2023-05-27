@@ -58,7 +58,6 @@ function addingUsersJoinedName(data) {
         name = 'You ';
     } else {
         name = data.name;
-        name = name.charAt(0).toUpperCase() + name.slice(1);
     }
     listsParent.innerHTML += `<li>${name} joined</li>`;
 }
@@ -112,6 +111,7 @@ function clearListOnTheScreen() {
     listsParent.innerHTML = ``;
 }
 //refreshing the data at 3sec
-setInterval(() => {
-    gettingData();
-}, 3000);
+// setInterval(() => {
+//     gettingData();
+// }, 3000);
+
