@@ -75,7 +75,7 @@ function showAllGroupsOnTheScreen(data) {
     }
     button3.onclick = function () {
         localStorage.setItem('gId', JSON.stringify(data.id));
-        // window.location.href = "../chats/chats.html"
+        window.location.href = "../chats/chats.html"
     }
     if (data.admin === true) {
         p.append(button);

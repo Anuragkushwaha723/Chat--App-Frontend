@@ -1,12 +1,14 @@
 let token = localStorage.getItem('token');
 let userName = parseJwt(token);
+let gid = JSON.parse(localStorage.getItem('gId'));
 localStorage.setItem("chats", '[]');
 localStorage.setItem("users", '[]');
 async function submitMessage(e) {
     try {
         e.preventDefault();
         let messages = e.target.messages.value;
-        let data = await axios.post('http://localhost:3000/chats/saveMessage', { messages: messages }, { headers: { Authorization: token } });
+        let data = await axios.post(`http://localhost:3000/chats/saveMessage?gid=${gid}`, { messages: messages }, { headers: { Authorization: token } });
+        gettingData();
     } catch (error) {
         showErrorMessage(error);
     }
@@ -73,7 +75,7 @@ async function gettingData() {
         if (chats.length > 0) {
             lstChtId = chats[chats.length - 1].id;
         }
-        let data = await axios.get(`http://localhost:3000/chats/getMessage?lstUsrId=${lstUsrId}&lstChtId=${lstChtId}`, { headers: { Authorization: token } });
+        let data = await axios.get(`http://localhost:3000/chats/getMessage?lstUsrId=${lstUsrId}&lstChtId=${lstChtId}&gid=${gid}`, { headers: { Authorization: token } });
         if (data.data.users.length > 0) {
             let newUsers = [...chats, ...data.data.users];
             if (newUsers.length > 1000) {
