@@ -71,7 +71,7 @@ function showAllGroupsOnTheScreen(data) {
         openAddMemeberForm(data.id);
     }
     button1.onclick = function () {
-        addUsersLists(data.id);
+        addUsersLists(data.id, data.admin);
     }
     button3.onclick = function () {
         localStorage.setItem('gId', JSON.stringify(data.id));
@@ -144,7 +144,7 @@ async function submitAddMemeberForm(e, id) {
         errElement.innerText = "This phone no. doesn't registered in this app";
     }
 }
-async function addUsersLists(id) {
+async function addUsersLists(id, admin) {
     let userList = document.getElementById(`usersList${id}`);
     userList.innerHTML = ``;
     const button = document.createElement('button');
@@ -157,7 +157,7 @@ async function addUsersLists(id) {
         let data = await axios.get(`http://localhost:3000/groups/get-users-in-group?gid=${id}`, { headers: { Authorization: token } });
         if (data.data.length > 0) {
             for (var i = 0; i < data.data.length; i++) {
-                showUserListOnScreen(data.data[i], id);
+                showUserListOnScreen(data.data[i], id, admin);
             }
         }
     } catch (error) {
@@ -167,7 +167,7 @@ async function addUsersLists(id) {
         userList.append(p);
     }
 }
-function showUserListOnScreen(data, id) {
+function showUserListOnScreen(data, id, admin) {
     let li = document.createElement('li');
     li.className = "m-2";
     let text1 = document.createTextNode(`${data.name} ${data.admin === true ? "(Admin)" : ""}`);
@@ -185,7 +185,10 @@ function showUserListOnScreen(data, id) {
         button1.onclick = function () {
             makeUserAdmin(data.id, id);
         }
-        li.append(button, button1);
+        if (admin == true) {
+            li.append(button, button1);
+        }
+
     }
     let userList = document.getElementById(`usersList${id}`);
     userList.append(li);
