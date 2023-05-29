@@ -1,3 +1,4 @@
+let token = localStorage.getItem('token');
 // create group name form
 document.getElementById('creategroupname').style.display = 'none';
 function openCreateGroupName() {
@@ -10,7 +11,7 @@ async function submitCreateGroupNameForm(e) {
     try {
         e.preventDefault();
         const groupName = e.target.groupName.value;
-        // networking axios
+        let data = await axios.post('http://localhost:3000/groups/create-group', { groupName }, { headers: { Authorization: token } });
         if (data.data) {
             document.getElementById('creategroupname').style.display = 'none';
             getData();
@@ -32,8 +33,7 @@ window.addEventListener('DOMContentLoaded', () => {
 })
 async function getData() {
     try {
-        // networking axios
-        let data = { data: [{ id: "1", admin: true, name: "rajf" }, { id: "2", admin: true, name: "frjf" }, { id: "4", admin: true, name: "rsft" }] };
+        let data = await axios.get('http://localhost:3000/groups/get-all-group', { headers: { Authorization: token } });
         if (data.data.length > 0) {
             allgroups.innerHTML = ``;
             for (let i = 0; i < data.data.length; i++) {
@@ -74,9 +74,13 @@ function showAllGroupsOnTheScreen(data) {
         addUsersLists(data.id);
     }
     button3.onclick = function () {
+        localStorage.setItem('gId', JSON.stringify(data.id));
         // window.location.href = "../chats/chats.html"
     }
-    p.append(button, button1, button3);
+    if (data.admin === true) {
+        p.append(button);
+    }
+    p.append(button1, button3);
 
     const div1 = document.createElement('div');
     div1.id = `memeberForm${data.id}`;
@@ -131,9 +135,8 @@ async function submitAddMemeberForm(e, id) {
     try {
         e.preventDefault();
         let phoneNo = e.target.phone.value;
-        // networking axios
-        if (data.data) {
-            console.log(phoneNo);
+        let data = await axios.post(`http://localhost:3000/groups/add-user-in-group?gid=${id}`, { phoneNo }, { headers: { Authorization: token } });
+        if (data.data.message === 'success') {
             memberForm.innerHTML = ``;
         }
     } catch (error) {
@@ -151,8 +154,7 @@ async function addUsersLists(id) {
     }
     userList.append(button);
     try {
-        // newtorking axios
-        let data = { data: [{ id: "1", admin: true, name: "Virat" }, { id: "2", admin: false, name: "Raj" }, { id: "3", admin: true, name: "Sehwag" }] };
+        let data = await axios.get(`http://localhost:3000/groups/get-users-in-group?gid=${id}`, { headers: { Authorization: token } });
         if (data.data.length > 0) {
             for (var i = 0; i < data.data.length; i++) {
                 showUserListOnScreen(data.data[i], id);
@@ -192,9 +194,9 @@ function closeUserList(id) {
     let userList = document.getElementById(`usersList${id}`);
     userList.innerHTML = ``;
 }
-function deleteUser(id, gid) {
+async function deleteUser(id, gid) {
     try {
-        //networking axios
+        let data = await axios.get(`http://localhost:3000/groups/delete-users-in-group?gid=${gid}&uId=${id}`, { headers: { Authorization: token } });
         if (data.data.message === 'success') {
             closeUserList(gid);
         }
@@ -202,9 +204,9 @@ function deleteUser(id, gid) {
 
     }
 }
-function makeUserAdmin(id, gid) {
+async function makeUserAdmin(id, gid) {
     try {
-        //networking axios
+        let data = await axios.get(`http://localhost:3000/groups/make-admin-users-in-group?gid=${gid}&uId=${id}`, { headers: { Authorization: token } });
         if (data.data.message === 'success') {
             closeUserList(gid);
         }
