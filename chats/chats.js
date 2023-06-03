@@ -7,8 +7,19 @@ async function submitMessage(e) {
     try {
         e.preventDefault();
         let messages = e.target.messages.value;
-        let data = await axios.post(`http://localhost:3000/chats/saveMessage?gid=${gid}`, { messages: messages }, { headers: { Authorization: token } });
-        gettingData();
+        let file = e.target.file;
+        if (file.files.length > 0) {
+            const newFile = new FormData();
+            newFile.append('file', file.files[0]);
+            await axios.post(`http://localhost:3000/chats/saveFiles?gid=${gid}`, newFile, { headers: { Authorization: token } });
+            gettingData();
+            return;
+        }
+        if (messages.length > 0) {
+            await axios.post(`http://localhost:3000/chats/saveMessage?gid=${gid}`, { messages: messages }, { headers: { Authorization: token } });
+            gettingData();
+            return;
+        }
     } catch (error) {
         showErrorMessage(error);
     }
@@ -40,7 +51,11 @@ function addingListInTheScreen(data) {
     } else {
         name = data.user.name;
     }
-    listsParent.innerHTML += `<li>${name}: ${data.messages}</li>`;
+    if (isValidHttpUrl(data.messages)) {
+        listsParent.innerHTML += `<li>${name}: <a href="${data.messages}">Files</a></li>`;
+    } else {
+        listsParent.innerHTML += `<li>${name}: ${data.messages}</li>`;
+    }
 }
 //decoding the token
 function parseJwt(token) {
@@ -62,6 +77,18 @@ function addingUsersJoinedName(data) {
         name = data.name;
     }
     listsParent.innerHTML += `<li>${name} joined</li>`;
+}
+//check stringf is link
+function isValidHttpUrl(string) {
+    let url;
+
+    try {
+        url = new URL(string);
+    } catch (_) {
+        return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
 }
 //get the data from api and showe in the screen
 async function gettingData() {
